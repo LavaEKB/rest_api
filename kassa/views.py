@@ -29,7 +29,7 @@ class ProfileView(generics.GenericAPIView):
 class PageNumberSetPagination(pagination.PageNumberPagination):
     page_size = 3
     page_size_query_param = 'page_size'
-    #ordering = 'sum_gp'
+    #ordering = 'id'
 
 class NtabDetailView(generics.ListAPIView):
     serializer_class = SaleSerializer
@@ -45,6 +45,6 @@ class SaleViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.SearchFilter,)
 
     serializer_class = SaleSerializer
-    queryset = Sale.objects.all().order_by('sum_gp')
+    queryset = Sale.objects.all().order_by('-id')
     lookup_field = 'id'
     pagination_class = PageNumberSetPagination
