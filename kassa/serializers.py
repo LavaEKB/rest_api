@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Sale
+#, Sp_Accept_Amcom_PayModel
 from django.contrib.auth.models import User
 
 class UserSerializer(serializers.ModelSerializer):

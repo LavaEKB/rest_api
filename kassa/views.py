@@ -6,6 +6,8 @@ from rest_framework.response import Response
 from rest_framework import pagination
 from rest_framework import generics, permissions
 from .serializers import UserSerializer
+from django.db import connection
+from rest_framework.decorators import api_view, permission_classes
 
 class SaleViewAdd(generics.ListCreateAPIView):
     queryset = Sale.objects.all()
@@ -15,6 +17,37 @@ class SaleViewAdd(generics.ListCreateAPIView):
     def get_queryset(self):
         ntab_slug = self.kwargs['ntab_slug']
         return Sale.objects.filter(ntab=ntab_slug)
+
+@api_view(['GET', 'POST']) 
+@permission_classes((permissions.AllowAny,))
+def Sp_Accept_Amcom_PayView(request):
+    if request.method == 'GET':
+        params = (777, 8888, 10, 1, 100, '01.01.2023',1,2)
+        print(params)
+
+        try:
+            cursor = connection.cursor()
+            cursor.execute("{CALL dbo.sp_accept_amcom_pay (%s, %s, %s, %s, %s, %s, %s, %s)}", params)
+            cursor.cancel() 
+        
+        except Exception:
+            print('Ошибка')
+        return Response(status=500)
+
+    if request.method == 'POST':
+        params = (request.POST.get('fcard'), request.POST.get('ncard'), request.POST.get('amcom'),
+                  request.POST.get('kassid'), request.POST.get('sum'), request.POST.get('data'),
+                  request.POST.get('vid'), request.POST.get('kol'))
+        print(params)
+        try:
+            cursor = connection.cursor()
+            cursor.execute("{CALL dbo.sp_accept_amcom_pay (%s, %s, %s, %s, %s, %s, %s, %s)}", params)
+            cursor.cancel() 
+        
+        except Exception:
+            print('Ошибка')
+        return Response(status=500)
+    return Response(status=500)
 
 class ProfileView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
