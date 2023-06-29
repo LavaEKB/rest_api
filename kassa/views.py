@@ -21,9 +21,12 @@ class SaleViewAdd(generics.ListCreateAPIView):
 @api_view(['GET', 'POST']) 
 @permission_classes((permissions.AllowAny,))
 def Sp_Accept_Amcom_PayView(request):
-    if request.method == 'GET':
-        params = (777, 8888, 10, 1, 100, '01.01.2023',1,2)
-        print(params)
+     
+     if request.method == 'POST':
+
+        # Преобразование в кортеж
+        params = tuple(request.data.values())
+        #print(params)
 
         try:
             cursor = connection.cursor()
@@ -32,22 +35,8 @@ def Sp_Accept_Amcom_PayView(request):
         
         except Exception:
             print('Ошибка')
-        return Response(status=500)
-
-    if request.method == 'POST':
-        params = (request.POST.get('fcard'), request.POST.get('ncard'), request.POST.get('amcom'),
-                  request.POST.get('kassid'), request.POST.get('sum'), request.POST.get('data'),
-                  request.POST.get('vid'), request.POST.get('kol'))
-        print(params)
-        try:
-            cursor = connection.cursor()
-            cursor.execute("{CALL dbo.sp_accept_amcom_pay (%s, %s, %s, %s, %s, %s, %s, %s)}", params)
-            cursor.cancel() 
-        
-        except Exception:
-            print('Ошибка')
-        return Response(status=500)
-    return Response(status=500)
+            return Response(status=500)
+        return Response(status=201)
 
 class ProfileView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
